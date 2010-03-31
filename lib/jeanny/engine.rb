@@ -222,30 +222,21 @@ module Jeanny
         
         def replace classes
 
-            data = []
-            each_string do |value, quote|
-                
-                next unless value.length > 4
-                meat = value.dup
-                
+            strings = Array.new
+            each_string do |string|
+                after = string.dup
                 classes.each do |full_class, short_class|
-                    while pos = meat =~ /([^#]|^)#{full_class}(?=[^a-z0-9\-_\.\/]|$)/i
+                    while pos = after =~ /([^#]|^)#{full_class}(?=[^a-z0-9\-_\.\/]|$)/i
                        if $1.nil? or $1.empty?
-                            meat[pos, full_class.length] = short_class
+                            after[pos, full_class.length] = short_class
                         else
-                            meat[pos + 1, full_class.length] = short_class
+                            after[pos + 1, full_class.length] = short_class
                         end
                     end
                 end
+                
+                @code[@code.index(string), string.length] = after unless string.eql? after
 
-                unless meat.eql? value
-                    data.push [ "#{quote}#{value}#{quote}", "#{quote}#{meat}#{quote}" ]
-                end
-
-            end
-
-            data.each do |string|
-                @code.gsub! /#{string.first}/, string.last
             end
             
             @code
@@ -293,12 +284,9 @@ module Jeanny
                         # Если мы в строке (или регулярке), текущий символ такой же как и начальный,
                         # а предыдущий не экранирует его, значит строка законченна.
                         # Переходим в режим "в коде"
-                        # if @char.eql? @start_char and scanner.pre_match !~ /[^\\]\\$/
                         if @char.eql? @start_char and not @last_char.eql? '\\'
                             if block_given?
-                                # yield "#{@start_char}#{@value}#{@start_char}", @value
-                                # yield @value
-                                yield @value, @start_char
+                                yield "#{@start_char}#{@value}#{@start_char}"
                             end
 
                             @status, @start_char, @value = :in_code, '', ''
