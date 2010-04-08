@@ -93,7 +93,7 @@ module Jeanny
             %w(a aa a0 a_ a- aaa a00 a0a aa0 aa_ a_a aa- a-a a0_ a0- a_0 a-0).each do |name|
                 max = name.length + 1
                 while name.length < max
-                    short_words << name unless name =~ /^ad/
+                    short_words << name unless name =~ /^ad/ or %w(el ek).include? name
                     name = name.next
                 end
             end
@@ -376,6 +376,7 @@ module Jeanny
             
                 # берем то что в кавычках и разбиваем по пробелам
                 match = $2.split(' ')
+                quote = $1
                 
                 # проходимся по получившемуся массиву
                 match.map! do |class_name|
@@ -396,7 +397,7 @@ module Jeanny
                 end.delete_if { |class_name| class_name.nil? or class_name.empty? }
                 
                 unless match.empty?
-                    "class=\"#{match.join(' ')}\""
+                    "class=#{quote}#{match.join(' ')}#{quote}"
                 else
                     ''
                 end
