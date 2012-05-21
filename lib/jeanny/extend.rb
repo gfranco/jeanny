@@ -1,5 +1,5 @@
 class Module
-    
+
     # Проверка наличия метода
     def jeanny_extension(method)
         if method_defined?(method)
@@ -40,20 +40,20 @@ class File
             end
         end
     end
-    
+
     jeanny_extension('list') do
         def self.list path
-            
+
             file_list = []
             file_path = [path].flatten.map do |item|
                 expand_path item
             end
 
             file_path.each do |file|
-                
+
                 list_item = Dir[file]
                 file_list << list_item
-                
+
                 if block_given?
                     unless list_item.empty?
                         list_item.each { |x| yield x, 0 }
@@ -61,11 +61,11 @@ class File
                         yield file, 1
                     end
                 end
-                
+
             end
 
             file_list.flatten
-            
+
         end
     end
 
@@ -98,43 +98,43 @@ class String
         # ... и желтым
         def yellow; colorize("\e[33m"); end
     end
-    
+
     jeanny_extension('each_expression') do
         def each_expression &block
-            
+
             expression_list = []
             code, index, length = self.dup, 0, self.length
-            
+
             while code[index, length].include? 'expression(' do
                 brake = 0
                 start = code[index, length].index 'expression('
                 block = code[index + start, length]
-                
+
                 block.length.times do |i|
                     char = block[i, 1]
                     if char =~ /\(|\)/
                         brake = brake + 1 if char.eql? '('
                         brake = brake - 1 if char.eql? ')'
-                        
+
                         if brake.zero?
                             brake = block[0, i + 1]
                             break
                         end
                     end
                 end
-                
+
                 index = index + start + brake.length
                 expression_list << brake
-                
+
                 yield brake if block_given?
-                
+
             end
-            
+
             expression_list
 
         end
     end
-    
+
     jeanny_extension 'replace_expressions' do
         def replace_expressions replace_string = '', &block
             code = self.dup
@@ -150,19 +150,19 @@ class String
             code
         end
     end
-    
+
     jeanny_extension 'replace_expressions!' do
         def replace_expressions! replace_string = '', &block
             replace replace_expressions(replace_string, &block)
         end
     end
-    
+
     jeanny_extension 'remove_expressions' do
         def remove_expressions
             replace_expressions ''
         end
     end
-    
+
     jeanny_extension 'remove_expressions!' do
         def remove_expressions!
             replace replace_expressions ''
@@ -172,7 +172,7 @@ class String
 end
 
 module Jeanny
-    
+
     %w(FileNotFound CompareFileFormatError ClassesNotFound).each { |error| eval "class Jeanny#{error} < RuntimeError; end" }
-    
+
 end
