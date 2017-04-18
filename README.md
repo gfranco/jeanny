@@ -1,8 +1,8 @@
-#Jeanny
+# Jeanny
 
 Библиотека для сокращения имён css классов.
 
-##Пример использования
+## Пример использования
 
     #!/usr/bin/env ruby
 
@@ -25,7 +25,7 @@
         replace :in => 'serp/js/_serp.js'
     end
 
-##Ещё один пример
+## Ещё один пример
     #!/usr/bin/env ruby
  
     require 'rubygems'
@@ -40,5 +40,5 @@
     # На выходе будет:
     # => <div class="a"><div class="d">Left</div><div class="e">Right</div></div><div class="b"><div class="f">Colors Wizard</div></div>
     
-##Установка
+## Установка
 sudo gem sources -a http://gemcutter.org && sudo gem install jeanny
